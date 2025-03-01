@@ -16,6 +16,20 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 350px;
 }
+.register-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 350px;
+}
+        
+input {
+    width: 100%; /* Makes all inputs the same width */
+    padding: 8px; /* Adds some padding for better appearance */
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
 h2 {
     text-align: center;
     color: #333;
@@ -28,7 +42,7 @@ label {
     margin-bottom: 5px;
     font-weight: bold;
 }
-input[type="text"], input[type="password"] {
+input[type="text"]{
     width: 100%;
     height: 30px;
     padding: 0px;
