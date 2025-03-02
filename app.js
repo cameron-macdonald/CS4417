@@ -1,47 +1,61 @@
-    import http from 'http';
-    import fs from 'fs';
-    import path from 'path';
-    import express from 'express';
-    import { fileURLToPath } from 'url';
+import express from 'express';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import sqlite3 from 'sqlite3';
+import { open } from 'sqlite';
+import bodyParser from 'body-parser';
 
-    const PORT = 8070;
+const PORT = 8070;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-    // Get the current directory name
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
+const app = express();
 
+// Middleware
+app.use(express.static(path.join(__dirname, 'views'))); // Serve static files
+app.use(bodyParser.urlencoded({ extended: true })); // Parse form data
 
+// SQLite setup
+const dbPromise = open({
+  filename: path.join(__dirname, 'CS4417.db'),
+  driver: sqlite3.Database
+});
 
+//____________________________________________________________
+//----------------------------PATHS---------------------------
+//____________________________________________________________
 
-http.createServer((req, res) => {
-  // Determine the file path based on the request URL
-  let filePath = path.join(__dirname, 'views', req.url === '/' ? 'login.html' : req.url);
+// GET login page (default)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'login.html'));
+});
 
-  // Map file extensions to content types
-  const extname = path.extname(filePath);
-  const contentType = {
-    '.html': 'text/html',
-    '.css': 'text/css',
-    '.js': 'application/javascript',
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.gif': 'image/gif',
-  }[extname] || 'application/octet-stream';
+//--------REGISTER-----------
+// GET register page
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'register.html'));
+});
+//POST register page
+app.post('/register', async (req, res) => {
+  const { first_name, last_name, username, email, password } = req.body;
+  console.log("enterd");
+  if (!first_name || !last_name || !username || !email || !password) {
+    return res.status(400).send('All fields are required.');
+  }
 
-  // Check if the file exists
-  fs.readFile(filePath, (err, content) => {
-    if (err) {
-      if (err.code === 'ENOENT') {
-        res.writeHead(404, { 'Content-Type': 'text/html' });
-        res.end('<h1>404 Not Found</h1>');
-      } else {
-        res.writeHead(500);
-        res.end('Server Error');
-      }
-    } else {
-      // Serve the file
-      res.writeHead(200, { 'Content-Type': contentType });
-      res.end(content, 'utf-8');
-    }
-  });
-}).listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+  try {
+    const db = await dbPromise;
+    await db.run(
+      `INSERT INTO Users (first_name, last_name, username, email, password) VALUES (?, ?, ?, ?, ?)`,
+      [first_name, last_name, username, email, password]
+    );
+    res.send('Registration successful!');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error registering user. Username or email may already exist.');
+  }
+});
+
+// Start the server
+app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
