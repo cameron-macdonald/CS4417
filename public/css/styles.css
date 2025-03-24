@@ -1,0 +1,196 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #9a9999;
+    margin: 0;
+    padding: 0;
+}
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 60px); /* Adjust height so navbar isn't affected */
+    text-align: center;
+}
+
+.login-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 350px;
+}
+.register-container, .update-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 350px;
+}
+        
+input {
+    width: 100%; /* Makes all inputs the same width */
+    padding: 8px; /* Adds some padding for better appearance */
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+input[type="text"],[type="email"],select{
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+button:hover {
+    background-color: #0056b3;
+}
+.footer {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Space between logo and logout */
+    align-items: center; /* Align items vertically */
+    padding: 10px 20px;
+    background-color: #333; /* Dark navbar */
+    color: white;
+    position: relative;
+}
+
+.logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%); /* Center the logo */
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.logout-btn {
+    width: 80px;
+    padding: 8px 15px;
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.update-btn {
+    width: 170px;
+    padding: 8px 15px;
+    background-color: rgb(129, 95, 239);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.score-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    background: #f8f8f8;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 40%;
+    margin: auto;
+}
+
+.score-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+}
+
+.score-container {
+    background: #f8f8f8;
+    padding: 20px;
+    border-radius: 8px;
+    width: 48%; 
+}
+
+.submit-btn {
+    margin-top: 20px;
+    padding: 10px 15px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+/* 📱 Responsive: Stacks on small screens */
+@media (max-width: 700px) {
+    .score-row {
+        flex-direction: column;
+    }
+    
+    .score-container {
+        width: 100%;
+    }
+}
+
+.score-section {
+    max-width: 100%;
+    overflow-x: auto; /* Enables horizontal scrolling if needed */
+}
+
+#scoreTable-container {
+    max-height: 385px; /* Adjust height as needed */
+    overflow-y: auto; /* Enables vertical scrolling */
+    border: 1px solid #ddd; /* Optional border */
+}
+
+#scoreTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#scoreTable th, #scoreTable td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+#scoreTable thead {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+

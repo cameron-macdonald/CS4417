@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Password</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+
+<body>
+    <div class="main-content">
+        <div class="update-container">
+            <h2>Update Password</h2>
+
+            <div id="error-message" style="color: red; text-align: center; margin-bottom: 10px;"></div>
+
+            <form id="update-form">
+                <div class="form-group">
+                    <label for="current_password">Current Password:</label>
+                    <input type="password" id="current_password" name="current_password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="new_password">New Password:</label>
+                    <input type="password" id="new_password" name="new_password" required>
+                </div>
+
+                <button type="submit">Update Password</button>
+            </form>
+
+            <p class="footer">Don't want to update? <a href="/homepage">Go back to homepage</a></p>
+        </div>
+    </div>
+
+
+    <script>
+        document.getElementById('update-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const csrfResponse = await fetch('/csrf-token', { credentials: 'include' });
+            const csrfData = await csrfResponse.json();
+            const csrfToken = csrfData.csrfToken;
+
+            try {
+                const response = await fetch('/update', {
+                    method: 'POST',
+                    body: new URLSearchParams(formData),
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRF-Token': csrfToken  // Include CSRF token
+                    },
+                    credentials: 'include'
+                });
+
+                // Check if response is valid JSON
+                let data;
+                try {
+                    data = await response.json();
+                } catch (err) {
+                    console.error('Invalid JSON response:', err);
+                    document.getElementById('error-message').textContent = 'Server error. Please try again.';
+                    return;
+                }
+
+                if (data.success) {
+                    window.location.href = data.redirect; // Redirect to homepage
+                } else {
+                    document.getElementById('error-message').textContent = data.message; // Show error message
+                }
+
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                document.getElementById('error-message').textContent = 'Network error. Please try again.';
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,31 +1,84 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    
+    <title>Login</title>
     <link rel="stylesheet" type="text/css" href="/css/styles.css">
 </head>
-<body>
 
-    <div class="login-container">
-        <h2>Login</h2>
-        <form action="/login" method="POST">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit">Login</button>
-        </form>
-        <div class="footer">
-            <p>Don't have an account? <a href="/register.html">Sign up</a></p>
+<body>
+    <div class="main-content">
+        <div class="register-container">
+            <h2>Login</h2>
+
+            <div id="error-message" style="color: red; text-align: center; margin-bottom: 10px;"></div>
+
+            <form id="login-form" method="POST">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <button type="submit">Login</button>
+            </form>
+
+            <p class="footer">Don't have an account? <a href="/register">Register here</a></p>
         </div>
     </div>
+
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            try {
+                // Fetch CSRF token first
+                const csrfResponse = await fetch('/csrf-token', { credentials: 'include' });
+                const csrfData = await csrfResponse.json();
+                const csrfToken = csrfData.csrfToken;
+
+                // Send login request with CSRF token
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    body: new URLSearchParams(formData),
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRF-Token': csrfToken  // Include CSRF token
+                    },
+                    credentials: 'include'
+                });
+
+                let data;
+                try {
+                    data = await response.json();
+                } catch (err) {
+                    console.error('Invalid JSON response:', err);
+                    document.getElementById('error-message').textContent = 'Server error. Please try again.';
+                    return;
+                }
+
+                if (data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    document.getElementById('error-message').textContent = data.message;
+                }
+
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                document.getElementById('error-message').textContent = 'Network error. Please try again.';
+            }
+        });
+    </script>
+
 </body>
+
 </html>
